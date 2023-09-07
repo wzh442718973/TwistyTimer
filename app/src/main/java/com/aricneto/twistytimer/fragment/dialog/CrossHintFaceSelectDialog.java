@@ -15,28 +15,25 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogCrossHintFaceSelectBinding;
 import com.aricneto.twistytimer.activity.MainActivity;
 import com.aricneto.twistytimer.utils.DefaultPrefs;
 import com.aricneto.twistytimer.utils.Prefs;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Dialog that allows a user to select the faces where the cross hints will be shown
  */
 
 public class CrossHintFaceSelectDialog extends DialogFragment {
-    private Unbinder mUnbinder;
 
-    @BindView(R.id.top)   View top;
-    @BindView(R.id.left)  View left;
-    @BindView(R.id.front) View front;
-    @BindView(R.id.right) View right;
-    @BindView(R.id.back)  View back;
-    @BindView(R.id.down)  View down;
-    @BindView(R.id.button_save)  View save;
+    View top;
+    View left;
+    View front;
+    View right;
+    View back;
+    View down;
+    View save;
 
     public static CrossHintFaceSelectDialog newInstance() {
         return new CrossHintFaceSelectDialog();
@@ -110,8 +107,14 @@ public class CrossHintFaceSelectDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.dialog_cross_hint_face_select, container);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogCrossHintFaceSelectBinding binding = DialogCrossHintFaceSelectBinding.inflate(inflater, container, false);
+        top = binding.top;
+        left = binding.left;
+        front= binding.front;
+        right = binding.right;
+        back = binding.back;
+        down = binding.down;
+        save = binding.buttonSave;
 
         // Color cube
         setColor(top, Color.parseColor("#" + Prefs.getString(R.string.pk_cube_top_color, "FFFFFF")));
@@ -149,7 +152,7 @@ public class CrossHintFaceSelectDialog extends DialogFragment {
 
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        return dialogView;
+        return binding.getRoot();
     }
 
     /**
@@ -201,6 +204,5 @@ public class CrossHintFaceSelectDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 }

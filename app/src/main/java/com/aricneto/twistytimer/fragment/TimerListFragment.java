@@ -43,6 +43,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.aricneto.twistify.BuildConfig;
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.FragmentTimeListBinding;
 import com.aricneto.twistytimer.TwistyTimer;
 import com.aricneto.twistytimer.activity.MainActivity;
 import com.aricneto.twistytimer.adapter.TimeCursorAdapter;
@@ -62,9 +63,6 @@ import org.joda.time.DateTime;
 
 import java.util.Random;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.aricneto.twistytimer.utils.TTIntent.*;
 
@@ -92,16 +90,15 @@ public class TimerListFragment extends BaseFragment
     // True if you want to search history, false if you only want to search session
     boolean         history;
 
-    private                        Unbinder          mUnbinder;
-    @BindView(R.id.list)           RecyclerView      recyclerView;
-    @BindView(R.id.warn_empty_list)ImageView         nothingHere;
-    @BindView(R.id.nothing_text)   TextView          nothingText;
-    @BindView(R.id.buttons_layout) View              buttonsLayout;
-    @BindView(R.id.clear_button)   View              clearButton;
-    @BindView(R.id.archive_button) View              archiveButton;
-    @BindView(R.id.add_time_button)View              addTimeButton;
-    @BindView(R.id.search_box)     AppCompatEditText searchEditText;
-    @BindView(R.id.more_button)    View              moreButton;
+    RecyclerView      recyclerView;
+    ImageView         nothingHere;
+    TextView          nothingText;
+    View              buttonsLayout;
+    View              clearButton;
+    View              archiveButton;
+    View              addTimeButton;
+    AppCompatEditText searchEditText;
+    View              moreButton;
 
     private String currentPuzzle;
     private String currentPuzzleCategory;
@@ -340,8 +337,16 @@ public class TimerListFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (DEBUG_ME) Log.d(TAG, "onCreateView(savedInstanceState=" + savedInstanceState + ")");
-        View rootView = inflater.inflate(R.layout.fragment_time_list, container, false);
-        mUnbinder = ButterKnife.bind(this, rootView);
+        FragmentTimeListBinding binding = FragmentTimeListBinding.inflate(inflater, container, false);
+        recyclerView = binding.list;
+        nothingHere = binding.warnEmptyList;
+        nothingText = binding.nothingText;
+        buttonsLayout = binding.buttonsLayout;
+        clearButton = binding.clearButton;
+        archiveButton = binding.archiveButton;
+        addTimeButton = binding.addTimeButton;
+        searchEditText = binding.searchBox;
+        moreButton = binding.moreButton;
 
         if (Prefs.getBoolean(R.string.pk_show_clear_button, false)) {
             clearButton.setVisibility(View.VISIBLE);
@@ -373,7 +378,7 @@ public class TimerListFragment extends BaseFragment
             }
         });
 
-        updateEasterEggs((RelativeLayout) rootView);
+        updateEasterEggs((RelativeLayout)binding.getRoot());
 
         setupRecyclerView();
         getLoaderManager().initLoader(MainActivity.TIME_LIST_LOADER_ID, null, this);
@@ -386,7 +391,7 @@ public class TimerListFragment extends BaseFragment
         onStatisticsUpdated(StatisticsCache.getInstance().getStatistics());
         StatisticsCache.getInstance().registerObserver(this); // Unregistered in "onDestroyView".
 
-        return rootView;
+        return binding.getRoot();
     }
 
     @Override
@@ -399,7 +404,6 @@ public class TimerListFragment extends BaseFragment
     public void onDestroyView() {
         if (DEBUG_ME) Log.d(TAG, "onDestroyView()");
         super.onDestroyView();
-        mUnbinder.unbind();
         StatisticsCache.getInstance().unregisterObserver(this);
         mRecentStatistics = null;
     }

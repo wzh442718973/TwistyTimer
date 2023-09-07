@@ -77,7 +77,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import butterknife.ButterKnife;
 
 import static com.aricneto.twistytimer.database.DatabaseHandler.IDX_COMMENT;
 import static com.aricneto.twistytimer.database.DatabaseHandler.IDX_DATE;
@@ -222,7 +221,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
 
         bp = new BillingProcessor(this, null, this);
 

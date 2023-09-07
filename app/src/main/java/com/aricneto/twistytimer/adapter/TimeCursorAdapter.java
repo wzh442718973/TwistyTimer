@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.ItemTimeListBinding;
 import com.aricneto.twistytimer.TwistyTimer;
 import com.aricneto.twistytimer.fragment.TimerListFragment;
 import com.aricneto.twistytimer.fragment.dialog.TimeDialog;
@@ -30,8 +31,6 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.aricneto.twistytimer.utils.TTIntent.*;
 
@@ -82,14 +81,8 @@ public class TimeCursorAdapter extends CursorRecyclerAdapter<RecyclerView.ViewHo
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View v;
-        RecyclerView.ViewHolder viewHolder;
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
-        v = inflater.inflate(R.layout.item_time_list, parent, false);
-        viewHolder = new TimeHolder(v);
-
-        return viewHolder;
+        ItemTimeListBinding binding = ItemTimeListBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return  new TimeHolder(binding);
     }
 
     @Override
@@ -215,16 +208,22 @@ public class TimeCursorAdapter extends CursorRecyclerAdapter<RecyclerView.ViewHo
     }
 
     static class TimeHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.card)        CardView       card;
-        @BindView(R.id.root)        RelativeLayout root;
-        @BindView(R.id.timeText)    TextView       timeText;
-        @BindView(R.id.penaltyText) TextView       penaltyText;
-        @BindView(R.id.date)        TextView       dateText;
-        @BindView(R.id.commentIcon) ImageView      commentIcon;
+        CardView       card;
+         RelativeLayout root;
+        TextView       timeText;
+        TextView       penaltyText;
+        TextView       dateText;
+        ImageView      commentIcon;
 
-        public TimeHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
+        public TimeHolder(ItemTimeListBinding binding) {
+            super(binding.getRoot());
+
+            card = binding.card;
+            root = binding.root;
+            timeText = binding.timeText;
+            penaltyText = binding.penaltyText;
+            dateText = binding.date;
+            commentIcon = binding.commentIcon;
         }
     }
 }

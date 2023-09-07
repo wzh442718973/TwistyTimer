@@ -19,6 +19,7 @@ import android.widget.ListView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogCategorySelectBinding;
 import com.aricneto.twistytimer.TwistyTimer;
 import com.aricneto.twistytimer.adapter.BottomSheetSpinnerAdapter;
 import com.aricneto.twistytimer.database.DatabaseHandler;
@@ -36,17 +37,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.fragment.app.DialogFragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class CategorySelectDialog extends DialogFragment {
 
     private static final String KEY_SAVEDSUBTYPE = "savedSubtype";
 
-    @BindView(R.id.add_category)
     View addCategoryButton;
-    @BindView(R.id.list)
     ListView listView;
 
     // Puzzle and subtypes that are currently selected
@@ -59,7 +55,6 @@ public class CategorySelectDialog extends DialogFragment {
     // Subtype that's currently being edited
     private String currentEditSubtype = "";
 
-    private Unbinder mUnbinder;
 
     private DialogListenerMessage dialogListenerMessage;
 
@@ -83,11 +78,12 @@ public class CategorySelectDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_category_select, container, false);
-        mUnbinder = ButterKnife.bind(this, view);
+        DialogCategorySelectBinding binding = DialogCategorySelectBinding.inflate(inflater, container, false);
+        addCategoryButton = binding.addCategory;
+        listView = binding.list;
         mContext = getContext();
 
-        return view;
+        return binding.getRoot();
     }
 
     @SuppressWarnings("RestrictedApi")
@@ -239,6 +235,5 @@ public class CategorySelectDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 }

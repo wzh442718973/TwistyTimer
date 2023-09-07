@@ -15,19 +15,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.FragmentAlgListBinding;
 import com.aricneto.twistytimer.activity.MainActivity;
 import com.aricneto.twistytimer.adapter.AlgCursorAdapter;
 import com.aricneto.twistytimer.database.AlgTaskLoader;
 import com.aricneto.twistytimer.utils.TTIntent.TTFragmentBroadcastReceiver;
 import com.aricneto.twistytimer.utils.ThemeUtils;
 
+import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.aricneto.twistytimer.utils.TTIntent.ACTION_ALGS_MODIFIED;
 import static com.aricneto.twistytimer.utils.TTIntent.ACTION_CHANGED_CATEGORY;
@@ -49,31 +48,22 @@ public class AlgListFragment extends BaseFragment implements LoaderManager.Loade
 
     private static final String KEY_SUBSET = "subset";
 
-    @BindView(R.id.root)
     LinearLayout rootLayout;
 
-    @BindView(R.id.spinnerIcon)
     View spinnerIcon;
 
-    @BindView(R.id.puzzleName)
     TextView titleView;
 
-    @BindView(R.id.puzzleCategory)
     TextView subtitleView;
 
-    @BindView(R.id.nav_button_history)
     View button1;
 
-    @BindView(R.id.nav_button_category)
     View button2;
 
-    @BindView(R.id.nav_button_settings)
     View buttonSettings;
 
-    @BindView(R.id.list)
     RecyclerView recyclerView;
 
-    private Unbinder mUnbinder;
     private String currentSubset;
     private AlgCursorAdapter algCursorAdapter;
     // Receives broadcasts about changes to the algorithm data.
@@ -131,8 +121,18 @@ public class AlgListFragment extends BaseFragment implements LoaderManager.Loade
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_alg_list, container, false);
-        mUnbinder = ButterKnife.bind(this, rootView);
+        FragmentAlgListBinding binding = FragmentAlgListBinding.inflate(inflater, container, false);
+
+        rootLayout = binding.root;
+        spinnerIcon = binding.mainActionbar.spinnerIcon;
+        titleView = binding.mainActionbar.puzzleName;
+        subtitleView = binding.mainActionbar.puzzleCategory;
+        button1 = binding.mainActionbar.navButtonHistory;
+        button2 = binding.mainActionbar.navButtonCategory;
+        buttonSettings = binding.mainActionbar.navButtonSettings;
+        recyclerView = binding.list;
+
+
 
         rootLayout.setBackground(ThemeUtils.fetchBackgroundGradient(getContext(), ThemeUtils.getPreferredTheme()));
 
@@ -157,13 +157,12 @@ public class AlgListFragment extends BaseFragment implements LoaderManager.Loade
         registerReceiver(mAlgDataChangedReceiver);
         registerReceiver(mUIInteractionReceiver);
 
-        return rootView;
+        return binding.getRoot();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 
     @Override

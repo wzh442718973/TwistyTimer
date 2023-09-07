@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogBottomsheetDetailBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -22,23 +23,19 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class BottomSheetDetailDialog extends BottomSheetDialogFragment {
 
-    @BindView(R.id.detail_text) TextView detailTextView;
-    @BindView(R.id.hint_text) TextView hintTextView;
-    @BindView(R.id.hint_divider) View hintDividerView;
-    @BindView(R.id.hint_title) View hintTitleView;
-    @BindView(R.id.hint_progress) View hintProgress;
+    TextView detailTextView;
+    TextView hintTextView;
+    View hintDividerView;
+    View hintTitleView;
+    View hintProgress;
 
     private boolean hasHints = false;
 
     private String detailText;
     private String hintText;
-    private Unbinder mUnbinder;
     private float detailTextSize;
 
     public static BottomSheetDetailDialog newInstance() {
@@ -64,10 +61,15 @@ public class BottomSheetDetailDialog extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_bottomsheet_detail, container, false);
-        mUnbinder = ButterKnife.bind(this, view);
+        DialogBottomsheetDetailBinding binding = DialogBottomsheetDetailBinding.inflate(inflater, container, false);
 
-        return view;
+        detailTextView = binding.detailText;
+        hintTextView = binding.hintText;
+        hintDividerView = binding.hintDivider;
+        hintTitleView = binding.hintTitle;
+        hintProgress = binding.hintProgress;
+
+        return binding.getRoot();
     }
 
     @Override
@@ -127,7 +129,6 @@ public class BottomSheetDetailDialog extends BottomSheetDialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 
 }

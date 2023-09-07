@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogThemeSelectBinding;
 import com.aricneto.twistytimer.items.Theme;
 import com.aricneto.twistytimer.utils.Prefs;
 import com.aricneto.twistytimer.utils.TTIntent;
@@ -23,9 +24,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.aricneto.twistytimer.utils.TTIntent.ACTION_CHANGED_THEME;
 import static com.aricneto.twistytimer.utils.TTIntent.CATEGORY_UI_INTERACTIONS;
@@ -35,13 +33,10 @@ import static com.aricneto.twistytimer.utils.TTIntent.CATEGORY_UI_INTERACTIONS;
  */
 public class ThemeSelectDialog extends DialogFragment {
 
-    private Unbinder mUnbinder;
     private Context mContext;
 
-    @BindView(R.id.list)
     RecyclerView themeRecycler;
 
-    @BindView(R.id.list2)
     RecyclerView textStyleRecycler;
 
     public static ThemeSelectDialog newInstance() {
@@ -50,8 +45,10 @@ public class ThemeSelectDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.dialog_theme_select, container);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogThemeSelectBinding binding = DialogThemeSelectBinding.inflate(inflater, container, false);
+        themeRecycler = binding.list;
+        textStyleRecycler = binding.list2;
+
 
         mContext = getContext();
 
@@ -81,13 +78,12 @@ public class ThemeSelectDialog extends DialogFragment {
 
         textStyleRecycler.setBackground(gradientDrawable);
 
-        return dialogView;
+        return binding.getRoot();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 }
 

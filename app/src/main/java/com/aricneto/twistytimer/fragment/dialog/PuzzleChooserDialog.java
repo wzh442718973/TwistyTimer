@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogPuzzleChooserDialogBinding;
 import com.aricneto.twistytimer.TwistyTimer;
 import com.aricneto.twistytimer.database.DatabaseHandler;
 import com.aricneto.twistytimer.items.Solve;
@@ -23,9 +24,6 @@ import com.aricneto.twistytimer.utils.PuzzleUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * <p>
@@ -63,11 +61,10 @@ public class PuzzleChooserDialog extends DialogFragment {
                 @NonNull String tag, @NonNull String puzzleType, @NonNull String puzzleCategory);
     }
 
-    private Unbinder mUnbinder;
 
-    @BindView(R.id.puzzleSpinner)   Spinner  puzzleSpinner;
-    @BindView(R.id.categorySpinner) Spinner  categorySpinner;
-    @BindView(R.id.selectButton)    TextView selectButton;
+       Spinner  puzzleSpinner;
+    Spinner  categorySpinner;
+      TextView selectButton;
 
     private static final String CURRENT_CATEGORY = "Normal";
 
@@ -124,8 +121,14 @@ public class PuzzleChooserDialog extends DialogFragment {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View dialogView = inflater.inflate(R.layout.dialog_puzzle_chooser_dialog, container);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogPuzzleChooserDialogBinding binding = DialogPuzzleChooserDialogBinding.inflate(inflater);
+        final View dialogView = binding.getRoot();
+
+
+        puzzleSpinner = binding.puzzleSpinner;
+        categorySpinner = binding.categorySpinner;
+        selectButton = binding.selectButton;
+
 
         final @StringRes int buttonTextResID
                 = getArguments() != null ? getArguments().getInt(ARG_BUTTON_TEXT_RES_ID, 0) : 0;
@@ -202,7 +205,6 @@ public class PuzzleChooserDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 
     /**

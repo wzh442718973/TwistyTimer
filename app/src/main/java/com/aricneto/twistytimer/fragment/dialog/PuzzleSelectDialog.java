@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogPuzzleSelectBinding;
 import com.aricneto.twistytimer.items.Theme;
 import com.aricneto.twistytimer.listener.DialogListenerMessage;
 import com.aricneto.twistytimer.utils.Prefs;
@@ -28,17 +29,13 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class PuzzleSelectDialog extends DialogFragment {
 
     private DialogListenerMessage dialogListener;
-    private Unbinder mUnbinder;
     private Context mContext;
 
-    @BindView(R.id.list) RecyclerView puzzleRecycler;
+    RecyclerView puzzleRecycler;
 
     public static PuzzleSelectDialog newInstance() {
         return new PuzzleSelectDialog();
@@ -47,8 +44,8 @@ public class PuzzleSelectDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.dialog_puzzle_select, container);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogPuzzleSelectBinding binding = DialogPuzzleSelectBinding.inflate(inflater, container, false);
+        puzzleRecycler = binding.list;
 
         mContext = getContext();
 
@@ -76,7 +73,7 @@ public class PuzzleSelectDialog extends DialogFragment {
 
         puzzleRecycler.setAdapter(puzzleAdapter);
 
-        return dialogView;
+        return binding.getRoot();
     }
 
     @Override

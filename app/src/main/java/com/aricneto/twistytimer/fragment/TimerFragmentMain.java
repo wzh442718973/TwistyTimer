@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.aricneto.twistify.databinding.FragmentTimerMainBinding;
 import com.aricneto.twistytimer.fragment.dialog.CategorySelectDialog;
 import com.aricneto.twistytimer.fragment.dialog.BottomSheetTrainerDialog;
 import com.aricneto.twistytimer.fragment.dialog.PuzzleSelectDialog;
@@ -58,9 +59,6 @@ import com.github.ksoichiro.android.observablescrollview.CacheFragmentStatePager
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.aricneto.twistytimer.fragment.TimerFragment.TIMER_MODE_TIMER;
 import static com.aricneto.twistytimer.fragment.TimerFragment.TIMER_MODE_TRAINER;
@@ -124,21 +122,20 @@ public class TimerFragmentMain extends BaseFragment implements OnBackPressedInFr
     private static final String TAG_CATEGORY_DIALOG = "select_category_dialog";
     private static final String TAG_PUZZLE_DIALOG   = "puzzle_spinner_dialog_fragment";
 
-    private Unbinder mUnbinder;
 
-    @BindView(R.id.root)         RelativeLayout  rootLayout;
-    @BindView(R.id.toolbar)      CardView        mToolbar;
-    @BindView(R.id.pager)        LockedViewPager viewPager;
-    @BindView(R.id.main_tabs)    TabLayout       tabLayout;
-    @BindView(R.id.tab_view)    View            tabView;
-    @BindView(R.id.puzzleSpinner)View            puzzleSpinnerLayout;
+    RelativeLayout  rootLayout;
+    CardView        mToolbar;
+    LockedViewPager viewPager;
+    TabLayout       tabLayout;
+    View            tabView;
+    View            puzzleSpinnerLayout;
 
-    @BindView(R.id.nav_button_settings) View      navButtonSettings;
-    @BindView(R.id.nav_button_category) View      navButtonCategory;
-    @BindView(R.id.nav_button_history) ImageView navButtonHistory;
+    View      navButtonSettings;
+    View      navButtonCategory;
+    ImageView navButtonHistory;
 
-    @BindView(R.id.puzzleCategory) TextView puzzleCategoryText;
-    @BindView(R.id.puzzleName) TextView puzzleNameText;
+    TextView puzzleCategoryText;
+    TextView puzzleNameText;
 
     ActionMode actionMode;
 
@@ -405,10 +402,20 @@ public class TimerFragmentMain extends BaseFragment implements OnBackPressedInFr
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (DEBUG_ME) Log.d(TAG, "onCreateView(savedInstanceState=" + savedInstanceState + ")");
-        View root = inflater.inflate(R.layout.fragment_timer_main, container, false);
-        mUnbinder = ButterKnife.bind(this, root);
+        FragmentTimerMainBinding binding = FragmentTimerMainBinding.inflate(inflater, container, false);
+        rootLayout = binding.root;
+        mToolbar = binding.mainActionbar.toolbar;
+        viewPager = binding.pager;
+        tabLayout = binding.mainTabs;
+        tabView = binding.tabView;
+        puzzleSpinnerLayout = binding.mainActionbar.puzzleSpinner;
+        navButtonCategory = binding.mainActionbar.navButtonCategory;
+        navButtonSettings = binding.mainActionbar.navButtonSettings;
+        navButtonHistory = binding.mainActionbar.navButtonHistory;
+        puzzleCategoryText = binding.mainActionbar.puzzleCategory;
+        puzzleNameText = binding.mainActionbar.puzzleName;
 
-        return root;
+        return binding.getRoot();
     }
 
     @Override
@@ -563,7 +570,6 @@ public class TimerFragmentMain extends BaseFragment implements OnBackPressedInFr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 
     private void updateHistorySwitchItem() {

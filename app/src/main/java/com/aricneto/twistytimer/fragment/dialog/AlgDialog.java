@@ -6,9 +6,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.widget.AppCompatSeekBar;
+
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogAlgDetailsBinding;
 import com.aricneto.twistytimer.TwistyTimer;
 import com.aricneto.twistytimer.database.DatabaseHandler;
 import com.aricneto.twistytimer.items.Algorithm;
@@ -33,10 +36,6 @@ import com.aricneto.twistytimer.utils.ThemeUtils;
 
 import java.util.HashMap;
 
-import butterknife.BindView;
-import butterknife.BindViews;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
@@ -44,21 +43,20 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
  */
 public class AlgDialog extends DialogFragment {
 
-    private Unbinder mUnbinder;
     private Context mContext;
 
-    @BindView(R.id.editButton)     ImageView           editButton;
-    @BindView(R.id.progressButton) ImageView           progressButton;
-    @BindView(R.id.progressBar)    MaterialProgressBar progressBar;
-    @BindView(R.id.algText)        TextView            algText;
-    @BindView(R.id.nameText)       TextView            nameText;
-    @BindView(R.id.revertButton)   ImageView           revertButton;
-    @BindView(R.id.pll_arrows)     ImageView           pllArrows;
-    @BindView(R.id.cube)           Cube                cube;
+    ImageView editButton;
+    ImageView progressButton;
+    MaterialProgressBar progressBar;
+    TextView algText;
+    TextView nameText;
+    ImageView revertButton;
+    ImageView pllArrows;
+    Cube cube;
 
-    private long            mId;
-    private Algorithm       algorithm;
-    private DialogListener  dialogListener;
+    private long mId;
+    private Algorithm algorithm;
+    private DialogListener dialogListener;
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
@@ -134,8 +132,16 @@ public class AlgDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.dialog_alg_details, container);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogAlgDetailsBinding binding = DialogAlgDetailsBinding.inflate(inflater);
+
+        editButton = binding.editButton;
+        progressButton = binding.progressButton;
+        progressBar = binding.progressBar;
+        algText = binding.algText;
+        nameText = binding.nameText;
+        revertButton = binding.revertButton;
+        pllArrows = binding.pllArrows;
+        cube = binding.cube;
 
         mContext = getContext();
         mId = getArguments().getLong("id");
@@ -166,7 +172,7 @@ public class AlgDialog extends DialogFragment {
 
         }
 
-        return dialogView;
+        return binding.getRoot();
     }
 
     public void setDialogListener(DialogListener listener) {
@@ -181,7 +187,6 @@ public class AlgDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
         if (dialogListener != null)
             dialogListener.onDismissDialog();
     }

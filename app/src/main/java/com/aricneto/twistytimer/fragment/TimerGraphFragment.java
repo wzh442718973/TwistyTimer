@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.FragmentTimerGraphBinding;
 import com.aricneto.twistytimer.activity.MainActivity;
 import com.aricneto.twistytimer.adapter.StatGridAdapter;
 import com.aricneto.twistytimer.items.Stat;
@@ -46,9 +47,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.aricneto.twistytimer.stats.AverageCalculator.tr;
 import static com.aricneto.twistytimer.utils.PuzzleUtils.convertTimeToString;
@@ -81,25 +79,18 @@ public class TimerGraphFragment extends Fragment implements StatisticsCache.Stat
     private String  currentPuzzleSubtype;
     private boolean history;
 
-    private Unbinder mUnbinder;
 
-    @BindView(R.id.linechart)
         LineChart lineChartView;
 
 
-    @BindView(R.id.stats_tab_improvement)
         TextView statsTabFavorite;
-    @BindView(R.id.stats_tab_average)
         TextView statsTabAverage;
-    @BindView(R.id.stats_tab_other)
+
         TextView statsTabOther;
 
 
-    @BindView(R.id.stats_table_improvement)
         View statsImprovementLayout;
-    @BindView(R.id.stats_table_average)
         View statsAverageLayout;
-    @BindView(R.id.stats_table_other)
         View statsOtherlayout;
 
     private GridView statsImprovementGridView;
@@ -113,13 +104,10 @@ public class TimerGraphFragment extends Fragment implements StatisticsCache.Stat
     private Drawable buttonDrawableFaded;
 
 
-    @BindView(R.id.stats_table_viewflipper)
         ViewFlipper statsTableViewFlipper;
 
-    @BindView(R.id.stats_container_pager)
         View statsContainerPager;
 
-    @BindView(R.id.stats_card)
         CardView statsCard;
 
 
@@ -191,10 +179,20 @@ public class TimerGraphFragment extends Fragment implements StatisticsCache.Stat
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         if (DEBUG_ME) Log.d(TAG, "onCreateView(savedInstanceState=" + savedInstanceState + ")");
-        final View root = inflater.inflate(R.layout.fragment_timer_graph, container, false);
-        mUnbinder = ButterKnife.bind(this, root);
+        FragmentTimerGraphBinding binding = FragmentTimerGraphBinding.inflate(inflater, container, false);
+        lineChartView = binding.linechart;
+        statsTabFavorite = binding.statsContainerPager.statsTabImprovement;
+        statsTabAverage = binding.statsContainerPager.statsTabAverage;
+        statsTabOther = binding.statsContainerPager.statsTabOther;
 
-        return root;
+        statsImprovementLayout = binding.statsContainerPager.statsTableImprovement.getRoot();
+        statsAverageLayout = binding.statsContainerPager.statsTableAverage.getRoot();
+        statsOtherlayout = binding.statsContainerPager.statsTableOther.getRoot();
+
+        statsCard = binding.statsCard;
+        statsContainerPager = binding.statsContainerPager.getRoot();
+        statsTableViewFlipper = binding.statsContainerPager.statsTableViewflipper;
+        return binding.getRoot();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -393,7 +391,6 @@ public class TimerGraphFragment extends Fragment implements StatisticsCache.Stat
     public void onDestroyView() {
         if (DEBUG_ME) Log.d(TAG, "onDestroyView()");
         super.onDestroyView();
-        mUnbinder.unbind();
         StatisticsCache.getInstance().unregisterObserver(this);
     }
 

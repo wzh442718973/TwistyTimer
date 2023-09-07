@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogBottomsheetRecyclerBinding;
 import com.aricneto.twistytimer.activity.MainActivity;
 import com.aricneto.twistytimer.adapter.AlgCursorAdapter;
 import com.aricneto.twistytimer.adapter.TrainerCursorAdapter;
@@ -39,9 +40,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.aricneto.twistytimer.utils.TTIntent.ACTION_ALGS_MODIFIED;
 import static com.aricneto.twistytimer.utils.TTIntent.ACTION_CHANGED_CATEGORY;
@@ -62,14 +60,10 @@ public class BottomSheetTrainerDialog extends BottomSheetDialogFragment implemen
     private static final String KEY_SUBSET = "subset";
     private static final String KEY_CATEGORY = "category";
 
-    @BindView(R.id.title)
     TextView          titleView;
-    @BindView(R.id.list)
     RecyclerView      recyclerView;
-    @BindView(R.id.button)
     AppCompatTextView button;
 
-    private Unbinder mUnbinder;
     TrainerScrambler.TrainerSubset currentSubset;
     String                         currentCategory;
     TrainerCursorAdapter           trainerCursorAdapter;
@@ -124,8 +118,11 @@ public class BottomSheetTrainerDialog extends BottomSheetDialogFragment implemen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.dialog_bottomsheet_recycler, container);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogBottomsheetRecyclerBinding binding = DialogBottomsheetRecyclerBinding.inflate(inflater, container, false);
+
+        titleView = binding.title;
+        recyclerView = binding.list;
+        button = binding.button;
 
         titleView.setText(R.string.trainer_spinner_title);
         Drawable icon = ThemeUtils.tintDrawable(getContext(), R.drawable.ic_outline_control_camera_24px,
@@ -147,7 +144,7 @@ public class BottomSheetTrainerDialog extends BottomSheetDialogFragment implemen
         registerReceiver(mAlgDataChangedReceiver);
         registerReceiver(mUIInteractionReceiver);
 
-        return dialogView;
+        return binding.getRoot();
     }
 
     private void resetRecyclerView() {
@@ -157,7 +154,6 @@ public class BottomSheetTrainerDialog extends BottomSheetDialogFragment implemen
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
         getLoaderManager().destroyLoader(MainActivity.ALG_LIST_LOADER_ID);
     }
 

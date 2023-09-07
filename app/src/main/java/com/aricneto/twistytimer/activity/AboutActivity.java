@@ -6,20 +6,21 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.ActivityAboutBinding;
 import com.aricneto.twistytimer.utils.LocaleUtils;
 import com.aricneto.twistytimer.utils.StoreUtils;
 import com.aricneto.twistytimer.utils.ThemeUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.psdev.licensesdialog.LicensesDialog;
 
 public class AboutActivity extends AppCompatActivity {
@@ -27,16 +28,16 @@ public class AboutActivity extends AppCompatActivity {
     private final static String APP_TITLE = "Twisty Timer";
     private final static String APP_PNAME = "com.aricneto.twistytimer";
 
-    @BindView(R.id.rateButton)        AppCompatTextView rateButton;
-    @BindView(R.id.feedbackButton)    AppCompatTextView feedbackButton;
-    @BindView(R.id.licenseButton)     AppCompatTextView licenseButton;
-    @BindView(R.id.testersButton)     AppCompatTextView testersButton;
-    @BindView(R.id.sourceButton)      AppCompatTextView sourceButton;
-    @BindView(R.id.appVersion)        AppCompatTextView appVersion;
-    @BindView(R.id.translateButton)    AppCompatTextView translateButton;
-    @BindView(R.id.translatorsButton) AppCompatTextView translatorsButton;
-    @BindView(R.id.contributorsButton)AppCompatTextView contributorsButton;
-    @BindView(R.id.back)               View     backButton;
+    AppCompatTextView rateButton;
+    AppCompatTextView feedbackButton;
+    AppCompatTextView licenseButton;
+    AppCompatTextView testersButton;
+    AppCompatTextView sourceButton;
+    TextView appVersion;
+    AppCompatTextView translateButton;
+    AppCompatTextView translatorsButton;
+    AppCompatTextView contributorsButton;
+    View backButton;
 
     View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
@@ -49,9 +50,9 @@ public class AboutActivity extends AppCompatActivity {
                     break;
                 case R.id.licenseButton:
                     new LicensesDialog.Builder(AboutActivity.this)
-                        .setNotices(R.raw.notices_app)
-                        .build()
-                        .show();
+                            .setNotices(R.raw.notices_app)
+                            .build()
+                            .show();
                     break;
                 case R.id.rateButton:
                     try {
@@ -62,17 +63,17 @@ public class AboutActivity extends AppCompatActivity {
                     break;
                 case R.id.testersButton:
                     ThemeUtils.roundAndShowDialog(AboutActivity.this, new MaterialDialog.Builder(AboutActivity.this)
-                        .title(R.string.testers)
-                        .content(R.string.testers_content)
-                        .positiveText(R.string.action_ok)
-                        .build());
+                            .title(R.string.testers)
+                            .content(R.string.testers_content)
+                            .positiveText(R.string.action_ok)
+                            .build());
                     break;
                 case R.id.translatorsButton:
                     ThemeUtils.roundAndShowDialog(AboutActivity.this, new MaterialDialog.Builder(AboutActivity.this)
-                        .title(R.string.translators)
-                        .content(getString(R.string.translators_content, StoreUtils.getStringFromRaw(getResources(), R.raw.translators)))
-                        .positiveText(R.string.action_ok)
-                        .build());
+                            .title(R.string.translators)
+                            .content(getString(R.string.translators_content, StoreUtils.getStringFromRaw(getResources(), R.raw.translators)))
+                            .positiveText(R.string.action_ok)
+                            .build());
                     break;
                 case R.id.contributorsButton:
                     ThemeUtils.roundAndShowDialog(AboutActivity.this, new MaterialDialog.Builder(AboutActivity.this)
@@ -103,8 +104,22 @@ public class AboutActivity extends AppCompatActivity {
         setTheme(ThemeUtils.getPreferredTheme());
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
-        ButterKnife.bind(this);
+
+        ActivityAboutBinding binding = ActivityAboutBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+
+        rateButton = binding.rateButton;
+        feedbackButton = binding.feedbackButton;
+        licenseButton = binding.licenseButton;
+        testersButton = binding.testersButton;
+        sourceButton = binding.sourceButton;
+        appVersion = binding.appVersion;
+        translateButton = binding.translateButton;
+        translatorsButton = binding.translatorsButton;
+        contributorsButton = binding.contributorsButton;
+        backButton = binding.back;
+
 
         backButton.setOnClickListener(v -> onBackPressed());
 

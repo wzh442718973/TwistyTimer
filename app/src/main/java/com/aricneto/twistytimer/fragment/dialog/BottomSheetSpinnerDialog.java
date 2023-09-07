@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogPuzzleSpinnerBinding;
 import com.aricneto.twistytimer.adapter.BottomSheetSpinnerAdapter;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -26,9 +27,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Implements a layout for easy creation of spinner-like bottom sheet dialogs (like the ones seen in
@@ -37,8 +35,8 @@ import butterknife.Unbinder;
 
 public class BottomSheetSpinnerDialog extends BottomSheetDialogFragment {
 
-    @BindView(R.id.title) AppCompatTextView titleTextView;
-    @BindView(R.id.list) ListView          listView;
+    AppCompatTextView titleTextView;
+    ListView          listView;
 
     private Context mContext;
 
@@ -47,8 +45,6 @@ public class BottomSheetSpinnerDialog extends BottomSheetDialogFragment {
 
     private String titleText;
     private int titleIcon;
-    private Unbinder mUnbinder;
-
     public static BottomSheetSpinnerDialog newInstance() {
         return new BottomSheetSpinnerDialog();
     }
@@ -72,12 +68,14 @@ public class BottomSheetSpinnerDialog extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_puzzle_spinner, container, false);
-        mUnbinder = ButterKnife.bind(this, view);
+        DialogPuzzleSpinnerBinding binding = DialogPuzzleSpinnerBinding.inflate(inflater);
 
         mContext = getContext();
+        titleTextView = binding.title;
+        listView = binding.list;
 
-        return view;
+
+        return binding.getRoot();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -126,6 +124,5 @@ public class BottomSheetSpinnerDialog extends BottomSheetDialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 }

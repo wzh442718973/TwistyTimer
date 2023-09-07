@@ -24,6 +24,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Process;
 import android.preference.PreferenceManager;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -53,6 +54,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.FragmentTimerBinding;
+import com.aricneto.twistify.databinding.FragmentTimerGraphBinding;
 import com.aricneto.twistytimer.TwistyTimer;
 import com.aricneto.twistytimer.database.DatabaseHandler;
 import com.aricneto.twistytimer.fragment.dialog.AddTimeDialog;
@@ -78,9 +81,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import androidx.fragment.app.FragmentManager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 import static com.aricneto.twistytimer.stats.AverageCalculator.tr;
@@ -108,7 +109,7 @@ import static com.aricneto.twistytimer.utils.TTIntent.broadcast;
 import static com.aricneto.twistytimer.utils.TTIntent.registerReceiver;
 import static com.aricneto.twistytimer.utils.TTIntent.unregisterReceiver;
 
-public class                                                                                                                                                                               TimerFragment extends BaseFragment
+public class TimerFragment extends BaseFragment
         implements OnBackPressedInFragmentListener, StatisticsCache.StatisticsObserver {
 
 
@@ -128,7 +129,7 @@ public class                                                                    
      */
     private static final String TAG = TimerFragment.class.getSimpleName();
 
-    private static final String PUZZLE         = "puzzle";
+    private static final String PUZZLE = "puzzle";
     private static final String PUZZLE_SUBTYPE = "puzzle_type";
     private static final String TRAINER_SUBSET = "trainer_subset";
     private static final String TIMER_MODE = "timer_mode";
@@ -157,7 +158,7 @@ public class                                                                    
      */
     private String realScramble = null;
 
-    private Solve  currentSolve    = null;
+    private Solve currentSolve = null;
 
     CountDownTimer countdown;
     boolean countingDown = false;
@@ -205,45 +206,44 @@ public class                                                                    
 
     private Animator mCurrentAnimator;
 
-    private Unbinder mUnbinder;
 
     // Holds the localized strings related to each detail statistic, in order:
     // Ao5, Ao12, Ao50, Ao100, Deviation, Mean, Best, Count
     private String detailTextNamesArray[] = new String[8];
 
-    @BindView(R.id.sessionDetailTextAverage) TextView detailTextAvg;
+    TextView detailTextAvg;
 
-    @BindView(R.id.sessionDetailTextOther) TextView detailTextOther;
+    TextView detailTextOther;
 
-    @BindView(R.id.detail_average_record_message) View detailAverageRecordMesssage;
+    View detailAverageRecordMesssage;
 
-    @BindView(R.id.chronometer)      ChronometerMilli    chronometer;
-    @BindView(R.id.scramble_box)     CardView                scrambleBox;
-    @BindView(R.id.scramble_text)
-                                     AppCompatTextView   scrambleText;
-    @BindView(R.id.scramble_img)     ImageView           scrambleImg;
-    @BindView(R.id.expanded_image)   ImageView           expandedImageView;
-    @BindView(R.id.inspection_text)  TextView            inspectionText;
-    @BindView(R.id.progressSpinner)  MaterialProgressBar progressSpinner;
-    @BindView(R.id.scramble_progress)MaterialProgressBar scrambleProgress;
+    ChronometerMilli chronometer;
+    CardView scrambleBox;
 
-    @BindView(R.id.scramble_button_hint)  AppCompatImageView        scrambleButtonHint;
-    @BindView(R.id.scramble_button_reset) AppCompatImageView        scrambleButtonReset;
-    @BindView(R.id.scramble_button_edit)  AppCompatImageView        scrambleButtonEdit;
-    @BindView(R.id.scramble_button_manual_entry) AppCompatImageView scrambleButtonManualEntry;
+    AppCompatTextView scrambleText;
+    ImageView scrambleImg;
+    ImageView expandedImageView;
+    TextView inspectionText;
+    MaterialProgressBar progressSpinner;
+    MaterialProgressBar scrambleProgress;
 
-    @BindView(R.id.qa_remove)        ImageView        deleteButton;
-    @BindView(R.id.qa_dnf)           ImageView        dnfButton;
-    @BindView(R.id.qa_plustwo)       ImageView        plusTwoButton;
-    @BindView(R.id.qa_comment)       ImageView        commentButton;
-    @BindView(R.id.qa_undo)          View        undoButton;
-    @BindView(R.id.qa_layout) LinearLayout     quickActionButtons;
-    @BindView(R.id.rippleBackground)     RippleBackground rippleBackground;
+    AppCompatImageView scrambleButtonHint;
+    AppCompatImageView scrambleButtonReset;
+    AppCompatImageView scrambleButtonEdit;
+    AppCompatImageView scrambleButtonManualEntry;
 
-    @BindView(R.id.root)                  RelativeLayout       rootLayout;
-    @BindView(R.id.startTimerLayout)      FrameLayout          startTimerLayout;
+    ImageView deleteButton;
+    ImageView dnfButton;
+    ImageView plusTwoButton;
+    ImageView commentButton;
+    View undoButton;
+    LinearLayout quickActionButtons;
+    RippleBackground rippleBackground;
 
-    @BindView(R.id.congratsText) TextView congratsText;
+    RelativeLayout rootLayout;
+    FrameLayout startTimerLayout;
+
+    TextView congratsText;
 
     private boolean buttonsEnabled;
     private boolean scrambleImgEnabled;
@@ -334,11 +334,11 @@ public class                                                                    
         }
     };
 
-    private Runnable       holdRunnable;
-    private Handler        holdHandler;
+    private Runnable holdRunnable;
+    private Handler holdHandler;
     private CountDownTimer plusTwoCountdown;
 
-    private RubiksCubeOptimalCross  optimalCross;
+    private RubiksCubeOptimalCross optimalCross;
     private RubiksCubeOptimalXCross optimalXCross;
     private BottomSheetDetailDialog scrambleDialog;
     private FragmentManager mFragManager;
@@ -524,10 +524,36 @@ public class                                                                    
         if (DEBUG_ME) Log.d(TAG, "onCreateView(savedInstanceState=" + savedInstanceState + ")");
 
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_timer, container, false);
-        mUnbinder = ButterKnife.bind(this, root);
+        FragmentTimerBinding binding = FragmentTimerBinding.inflate(inflater, container, false);
+        detailTextAvg = binding.sessionDetailTextAverage;
+        detailTextOther = binding.sessionDetailTextOther;
+        detailAverageRecordMesssage = binding.detailAverageRecordMessage;
+        chronometer = binding.chronometer;
+        scrambleBox = binding.scrambleBox.getRoot();
+        scrambleText = binding.scrambleBox.scrambleText;
+        scrambleImg = binding.scrambleImg;
+        expandedImageView = binding.expandedImage;
+        inspectionText = binding.inspectionText;
+        progressSpinner = binding.progressSpinner;
+        scrambleProgress = binding.scrambleBox.scrambleProgress;
 
-        return root;
+        scrambleButtonHint = binding.scrambleBox.scrambleButtonHint;
+        scrambleButtonReset = binding.scrambleBox.scrambleButtonReset;
+        scrambleButtonEdit = binding.scrambleBox.scrambleButtonEdit;
+        ;
+        scrambleButtonManualEntry = binding.scrambleBox.scrambleButtonManualEntry;
+
+        deleteButton = binding.qaButtons.qaRemove;
+        dnfButton = binding.qaButtons.qaDnf;
+        plusTwoButton = binding.qaButtons.qaPlustwo;
+        commentButton = binding.qaButtons.qaComment;
+        undoButton = binding.qaUndo;
+        quickActionButtons = binding.qaButtons.qaLayout;
+        rippleBackground = binding.rippleBackground;
+        rootLayout = binding.root;
+        startTimerLayout = binding.startTimerLayout;
+        congratsText = binding.congratsText;
+        return binding.getRoot();
     }
 
     @SuppressLint({"ClickableViewAccessibility", "RestrictedApi"})
@@ -619,7 +645,7 @@ public class                                                                    
                 inspectionSoundAlertEnabled = true;
             }
         }
-        
+
         if (!scrambleEnabled) {
             // CongratsText is by default aligned to below the scramble box. If it's missing, we have
             // to add an extra margin to account for the title header
@@ -658,9 +684,9 @@ public class                                                                    
             isLocked = false;
         }
 
-        if (! scrambleImgEnabled)
+        if (!scrambleImgEnabled)
             scrambleImg.setVisibility(View.GONE);
-        if (! sessionStatsEnabled) {
+        if (!sessionStatsEnabled) {
             detailTextAvg.setVisibility(View.INVISIBLE);
             detailTextOther.setVisibility(View.INVISIBLE);
         }
@@ -745,7 +771,7 @@ public class                                                                    
                 isReady = true;
                 // Indicate to the user that the hold was long enough.
                 chronometer.setHighlighted(true);
-                if (! inspectionEnabled) {
+                if (!inspectionEnabled) {
                     // If inspection is enabled, the toolbar is already hidden.
                     hideToolbar();
                 }
@@ -801,7 +827,7 @@ public class                                                                    
                             }
                             return false;
                     }
-                } else if (! isRunning) { // Not running and not counting down.
+                } else if (!isRunning) { // Not running and not counting down.
                     switch (motionEvent.getAction()) {
                         case MotionEvent.ACTION_DOWN:
 
@@ -896,9 +922,8 @@ public class                                                                    
     /**
      * Stops the chronometer on back press.
      *
-     * @return
-     *     {@code true} if the "Back" button press was consumed to hide the scramble or stop the
-     *     timer; or {@code false} if neither was necessary and the "Back" button press was ignored.
+     * @return {@code true} if the "Back" button press was consumed to hide the scramble or stop the
+     * timer; or {@code false} if neither was necessary and the "Back" button press was ignored.
      */
     @Override
     public boolean onBackPressedInFragment() {
@@ -942,8 +967,7 @@ public class                                                                    
     /**
      * Starts the inspection period countdown.
      *
-     * @param inspectionTime
-     *     The inspection time in seconds.
+     * @param inspectionTime The inspection time in seconds.
      */
     private void startInspectionCountdown(int inspectionTime) {
         // The "countdown" timer may be null if inspection was not enabled when "updateLocale" was
@@ -966,7 +990,6 @@ public class                                                                    
      * Calculates scramble image height multiplier to respect aspect ratio
      *
      * @param multiplier the height multiplier (must be the same multiplier as the width)
-     *
      * @return the height in px
      */
     private float calculateScrambleImageHeightMultiplier(float multiplier) {
@@ -1042,7 +1065,7 @@ public class                                                                    
         if (solve.getPenalty() == PENALTY_DNF || newTime <= 0
                 || mRecentStatistics == null
                 || mRecentStatistics.getAllTimeNumSolves()
-                   - mRecentStatistics.getAllTimeNumDNFSolves() < 4) {
+                - mRecentStatistics.getAllTimeNumDNFSolves() < 4) {
             // Not a valid time, or there are no previous statistics, or not enough previous times
             // to make reporting meaningful (or non-annoying), so cannot check for a new PB.
             return;
@@ -1053,7 +1076,7 @@ public class                                                                    
 
             // If "previousBestTime" is a DNF or UNKNOWN, it will be less than zero, so the new
             // solve time cannot better (i.e., lower).
-            if (newTime < previousBestTime ) {
+            if (newTime < previousBestTime) {
                 rippleBackground.startRippleAnimation();
                 congratsText.setText(getString(R.string.personal_best_message,
                         PuzzleUtils.convertTimeToString(previousBestTime - newTime, PuzzleUtils.FORMAT_DEFAULT)));
@@ -1076,8 +1099,8 @@ public class                                                                    
                         PuzzleUtils.convertTimeToString(newTime - previousWorstTime, PuzzleUtils.FORMAT_DEFAULT)));
 
                 congratsText.setCompoundDrawablesWithIntrinsicBounds(
-                            poopDrawable, null,
-                            poopDrawable, null);
+                        poopDrawable, null,
+                        poopDrawable, null);
 
                 congratsText.setVisibility(View.VISIBLE);
             }
@@ -1088,8 +1111,7 @@ public class                                                                    
      * Refreshes the display of the statistics. If this fragment has no view, or if the given
      * statistics are {@code null}, no update will be attempted.
      *
-     * @param stats
-     *     The updated statistics. These will not be modified.
+     * @param stats The updated statistics. These will not be modified.
      */
     @SuppressLint("SetTextI18n")
     @Override
@@ -1221,7 +1243,7 @@ public class                                                                    
                 showImage();
             }
         }
-        if (buttonsEnabled && ! isCanceled) {
+        if (buttonsEnabled && !isCanceled) {
             quickActionButtons.setEnabled(true);
             quickActionButtons.setVisibility(View.VISIBLE);
             quickActionButtons.animate()
@@ -1401,7 +1423,6 @@ public class                                                                    
     public void onDestroyView() {
         if (DEBUG_ME) Log.d(TAG, "onDestroyView()");
         super.onDestroyView();
-        mUnbinder.unbind();
         StatisticsCache.getInstance().unregisterObserver(this);
         mRecentStatistics = null;
     }
@@ -1410,10 +1431,10 @@ public class                                                                    
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         } else {
-            Display display         = ((WindowManager) activity.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-            int     rotation        = display.getRotation();
-            int     tempOrientation = activity.getResources().getConfiguration().orientation;
-            int     orientation     = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            Display display = ((WindowManager) activity.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            int rotation = display.getRotation();
+            int tempOrientation = activity.getResources().getConfiguration().orientation;
+            int orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
             switch (tempOrientation) {
                 case Configuration.ORIENTATION_LANDSCAPE:
@@ -1441,10 +1462,10 @@ public class                                                                    
             if (optimalCrossAsync != null)
                 optimalCrossAsync.cancel(true);
             optimalCrossAsync = new GetOptimalCross(realScramble,
-                                                    optimalCross, optimalXCross,
-                                                    showHintsXCrossEnabled,
-                                                    isRunning,
-                                                    scrambleDialog);
+                    optimalCross, optimalXCross,
+                    showHintsXCrossEnabled,
+                    isRunning,
+                    scrambleDialog);
             optimalCrossAsync.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
@@ -1491,7 +1512,7 @@ public class                                                                    
         @Override
         protected void onPreExecute() {
             Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE);
-            Log.d("OptimalCross onPre:",System.currentTimeMillis()+"");
+            Log.d("OptimalCross onPre:", System.currentTimeMillis() + "");
             super.onPreExecute();
         }
 
@@ -1511,7 +1532,7 @@ public class                                                                    
             super.onPostExecute(text);
             if (!isRunning) {
                 // Set the hint text
-                if(scrambleDialog != null) {
+                if (scrambleDialog != null) {
                     scrambleDialog.setHintText(text);
                     scrambleDialog.setHintVisibility(View.VISIBLE);
                 }
@@ -1540,7 +1561,7 @@ public class                                                                    
             scrambleProgress.setVisibility(View.VISIBLE);
 
             hideImage();
-            if (! isRunning)
+            if (!isRunning)
                 progressSpinner.setVisibility(View.VISIBLE);
             isLocked = true;
         }
@@ -1574,36 +1595,36 @@ public class                                                                    
         realScramble = scramble;
         scrambleText.setText(scramble);
         scrambleText.post(() -> chronometer.post(() -> {
-                    if (scrambleText != null) {
-                        // Calculate surrounding layouts to make sure the scramble text doesn't intersect any element
-                        // If it does, show only a "tap here to see more" hint instead of the scramble
-                            Rect scrambleRect = new Rect(scrambleBox.getLeft(), scrambleBox.getTop(), scrambleBox.getRight(), scrambleBox.getBottom());
-                            // The top line calculation is a bit tricky
-                            // We first get the top of the bounding box (which isn't necessarily
-                            // the top of the actual, visible text. To that, we add the baseline,
-                        // which is the measure from the top of the box to the actual baseline
-                        // of the text. Then, we add the text size, which gets us to the visible
-                        // top.
-                            Rect chronometerRect = new Rect(chronometer.getLeft(),
-                                                            (int) (chronometer.getTop()
-                                                                    + chronometer.getBaseline()
-                                                                    - chronometer.getTextSize()
-                                                                    + ThemeUtils.dpToPix(mContext, 28)),
-                                                            chronometer.getRight(),
-                                                            chronometer.getBottom());
-                            Rect congratsRect = new Rect(congratsText.getLeft(), congratsText.getTop(), congratsText.getRight(), congratsText.getBottom());
+            if (scrambleText != null) {
+                // Calculate surrounding layouts to make sure the scramble text doesn't intersect any element
+                // If it does, show only a "tap here to see more" hint instead of the scramble
+                Rect scrambleRect = new Rect(scrambleBox.getLeft(), scrambleBox.getTop(), scrambleBox.getRight(), scrambleBox.getBottom());
+                // The top line calculation is a bit tricky
+                // We first get the top of the bounding box (which isn't necessarily
+                // the top of the actual, visible text. To that, we add the baseline,
+                // which is the measure from the top of the box to the actual baseline
+                // of the text. Then, we add the text size, which gets us to the visible
+                // top.
+                Rect chronometerRect = new Rect(chronometer.getLeft(),
+                        (int) (chronometer.getTop()
+                                + chronometer.getBaseline()
+                                - chronometer.getTextSize()
+                                + ThemeUtils.dpToPix(mContext, 28)),
+                        chronometer.getRight(),
+                        chronometer.getBottom());
+                Rect congratsRect = new Rect(congratsText.getLeft(), congratsText.getTop(), congratsText.getRight(), congratsText.getBottom());
 
-                            if ((Rect.intersects(scrambleRect, chronometerRect)) ||
-                                (congratsText.getVisibility() == View.VISIBLE && Rect.intersects(chronometerRect, congratsRect))) {
-                                scrambleText.setText("[ " + getString(R.string.scramble_text_tap_hint) + " ]");
-                                scrambleBox.setClickable(true);
-                                scrambleBox.setOnClickListener(scrambleDetailClickListener);
-                            } else {
-                                scrambleBox.setOnClickListener(null);
-                                scrambleBox.setClickable(false);
-                                scrambleBox.setFocusable(false);
-                            }
-                            scrambleButtonHint.setOnClickListener(scrambleDetailClickListener);
+                if ((Rect.intersects(scrambleRect, chronometerRect)) ||
+                        (congratsText.getVisibility() == View.VISIBLE && Rect.intersects(chronometerRect, congratsRect))) {
+                    scrambleText.setText("[ " + getString(R.string.scramble_text_tap_hint) + " ]");
+                    scrambleBox.setClickable(true);
+                    scrambleBox.setOnClickListener(scrambleDetailClickListener);
+                } else {
+                    scrambleBox.setOnClickListener(null);
+                    scrambleBox.setClickable(false);
+                    scrambleBox.setFocusable(false);
+                }
+                scrambleButtonHint.setOnClickListener(scrambleDetailClickListener);
             }
         }));
 
@@ -1657,7 +1678,7 @@ public class                                                                    
         @Override
         protected void onPostExecute(Drawable drawable) {
             super.onPostExecute(drawable);
-            if (! isRunning) {
+            if (!isRunning) {
                 if (scrambleImg != null)
                     showImage();
             }
@@ -1690,9 +1711,9 @@ public class                                                                    
         // properties (X, Y).
         thumbView.getGlobalVisibleRect(startBounds);
         rootLayout.getGlobalVisibleRect(finalBounds, globalOffset);
-        startBounds.offset(- globalOffset.x, - globalOffset.y);
+        startBounds.offset(-globalOffset.x, -globalOffset.y);
         globalOffset.y -= scrambleBox.getHeight();
-        finalBounds.offset(- globalOffset.x, - globalOffset.y);
+        finalBounds.offset(-globalOffset.x, -globalOffset.y);
 
         // Adjust the start bounds to be the same aspect ratio as the final
         // bounds using the "center crop" technique. This prevents undesirable
@@ -1738,7 +1759,7 @@ public class                                                                    
                         startBounds.top, finalBounds.top))
                 .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X,
                         startScale, 1f)).with(ObjectAnimator.ofFloat(expandedImageView,
-                View.SCALE_Y, startScale, 1f));
+                        View.SCALE_Y, startScale, 1f));
         set.setDuration(mAnimationDuration);
         set.setInterpolator(new DecelerateInterpolator());
         set.addListener(new AnimatorListenerAdapter() {
@@ -1768,7 +1789,7 @@ public class                                                                    
             // back to their original values.
             AnimatorSet set1 = new AnimatorSet();
             set1.play(ObjectAnimator
-                    .ofFloat(expandedImageView, View.X, startBounds.left))
+                            .ofFloat(expandedImageView, View.X, startBounds.left))
                     .with(ObjectAnimator
                             .ofFloat(expandedImageView,
                                     View.Y, startBounds.top))

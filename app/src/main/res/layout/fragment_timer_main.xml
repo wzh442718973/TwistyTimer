@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/main_actionbar" />
+        <include layout="@layout/main_actionbar" android:id="@+id/main_actionbar" />
 
     </LinearLayout>
 

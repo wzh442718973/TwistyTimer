@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogAddTimeBinding;
 import com.aricneto.twistytimer.TwistyTimer;
 import com.aricneto.twistytimer.items.Solve;
 import com.aricneto.twistytimer.listener.DialogListener;
@@ -39,10 +41,6 @@ import com.aricneto.twistytimer.utils.ThemeUtils;
 import com.aricneto.twistytimer.watcher.SolveTimeNumberTextWatcher;
 
 import org.joda.time.DateTime;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.aricneto.twistytimer.utils.TTIntent.ACTION_GENERATE_SCRAMBLE;
 import static com.aricneto.twistytimer.utils.TTIntent.ACTION_TIME_ADDED;
@@ -56,18 +54,12 @@ import static com.aricneto.twistytimer.utils.TTIntent.broadcast;
  */
 public class AddTimeDialog extends DialogFragment {
 
-    private Unbinder mUnbinder;
-
-    @BindView(R.id.edit_text_time)
     AppCompatEditText timeEditText;
 
-    @BindView(R.id.button_more)
     View moreButton;
 
-    @BindView(R.id.check_scramble)
     AppCompatCheckBox useCurrentScramble;
 
-    @BindView(R.id.button_save)
     View saveButton;
 
     private DialogListener  dialogListener;
@@ -193,8 +185,12 @@ public class AddTimeDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.dialog_add_time, container);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogAddTimeBinding binding = DialogAddTimeBinding.inflate(inflater, container, false);
+
+        timeEditText = binding.editTextTime;
+        moreButton = binding.buttonMore;
+        useCurrentScramble = binding.checkScramble;
+        saveButton = binding.buttonSave;
 
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -214,7 +210,7 @@ public class AddTimeDialog extends DialogFragment {
             Log.e("AddTimeDialog", "Error showing keyboard: " + e);
         }
 
-        return dialogView;
+        return binding.getRoot();
     }
 
     public void setDialogListener(DialogListener listener) {
@@ -240,6 +236,5 @@ public class AddTimeDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 }

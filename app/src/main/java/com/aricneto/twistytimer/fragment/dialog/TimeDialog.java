@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogTimeDetailsBinding;
 import com.aricneto.twistytimer.TwistyTimer;
 import com.aricneto.twistytimer.database.DatabaseHandler;
 import com.aricneto.twistytimer.items.Solve;
@@ -43,26 +44,22 @@ import com.aricneto.twistytimer.utils.ThemeUtils;
 
 import org.joda.time.DateTime;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Shows the timeList dialog
  */
 public class TimeDialog extends DialogFragment {
 
-    private Unbinder mUnbinder;
 
-    @BindView(R.id.timeText)          TextView  timeText;
-    @BindView(R.id.puzzlePenaltyText) TextView  penaltyText;
-    @BindView(R.id.dateText)          TextView  dateText;
-    @BindView(R.id.scrambleText)      TextView  scrambleText;
-    @BindView(R.id.editButton)        ImageView editButton;
-    @BindView(R.id.commentButton)     ImageView commentButton;
-    @BindView(R.id.commentText)       TextView  commentText;
-    @BindView(R.id.overflowButton)    ImageView overflowButton;
-    @BindView(R.id.scramble_image)    ImageView scrambleImage;
+    TextView  timeText;
+    TextView  penaltyText;
+    TextView  dateText;
+    TextView  scrambleText;
+    ImageView editButton;
+    ImageView commentButton;
+    TextView  commentText;
+    ImageView overflowButton;
+    ImageView scrambleImage;
 
     private long            mId;
     private Solve           solve;
@@ -184,9 +181,17 @@ public class TimeDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.dialog_time_details, container);
-        //this.setEnterTransition(R.anim.activity_slide_in);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogTimeDetailsBinding binding = DialogTimeDetailsBinding.inflate(inflater, container, false);
+        timeText = binding.timeText;
+       penaltyText = binding.puzzlePenaltyText;
+       dateText = binding.dateText;
+       scrambleText = binding.scrambleText;
+       editButton = binding.editButton;
+       commentButton = binding.commentButton;
+       commentText = binding.commentText;
+       overflowButton = binding.overflowButton;
+       scrambleImage = binding.scrambleImage;
+
         mContext = getContext();
 
         mId = getArguments().getLong("id");
@@ -233,7 +238,7 @@ public class TimeDialog extends DialogFragment {
 
         }
 
-        return dialogView;
+        return binding.getRoot();
     }
 
     @Override
@@ -257,7 +262,6 @@ public class TimeDialog extends DialogFragment {
 
     @Override
     public void onDestroyView() {
-        mUnbinder.unbind();
         if (dialogListener != null)
             dialogListener.onDismissDialog();
         super.onDestroyView();

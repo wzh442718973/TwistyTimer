@@ -15,13 +15,11 @@ import android.view.Window;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FileChooserDialog;
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogExportImportBinding;
 import com.aricneto.twistytimer.utils.AnimUtils;
 import com.aricneto.twistytimer.utils.ExportImportUtils;
 import com.aricneto.twistytimer.utils.ThemeUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * <p>
@@ -96,14 +94,13 @@ public class ExportImportDialog extends DialogFragment
         void onExportSolveTimes(int fileFormat, String puzzleType, String puzzleCategory);
     }
 
-    private Unbinder mUnbinder;
     //@BindView(R.id.help_button)     View helpButton;
-    @BindView(R.id.export_backup)   View exportBackup;
-    @BindView(R.id.export_external) View exportExternal;
-    @BindView(R.id.import_backup)   View importBackup;
-    @BindView(R.id.import_external) View importExternal;
-    @BindView(R.id.import_button)   View importButton;
-    @BindView(R.id.export_button)   View exportButton;
+    View exportBackup;
+    View exportExternal;
+    View importBackup;
+    View importExternal;
+    View importButton;
+    View exportButton;
 
     private boolean mIsExport;
 
@@ -168,8 +165,16 @@ public class ExportImportDialog extends DialogFragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.dialog_export_import, container);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogExportImportBinding binding = DialogExportImportBinding.inflate(inflater);
+        View dialogView = binding.getRoot();
+
+        exportBackup = binding.exportBackup;
+        exportExternal = binding.exportExternal;
+        importBackup = binding.importBackup;
+        importExternal = binding.importExternal;
+        importButton = binding.importButton;
+        exportButton = binding.exportButton;
+
         mContext = getContext();
 
         exportBackup.setOnClickListener(clickListener);
@@ -188,7 +193,6 @@ public class ExportImportDialog extends DialogFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 
     /**

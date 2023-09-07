@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.ActivitySettingsBinding;
 import com.aricneto.twistytimer.fragment.dialog.CrossHintFaceSelectDialog;
 import com.aricneto.twistytimer.fragment.dialog.LocaleSelectDialog;
 import com.aricneto.twistytimer.listener.OnBackPressedInFragmentListener;
@@ -41,8 +42,6 @@ import com.takisoft.fix.support.v7.preference.PreferenceFragmentCompat;
 import java.lang.ref.PhantomReference;
 import java.util.function.Function;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SettingsActivity extends AppCompatActivity {
     /**
@@ -56,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
 
-    @BindView(R.id.back) View backButton;
+    View backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +66,11 @@ public class SettingsActivity extends AppCompatActivity {
         LocaleUtils.updateLocale(getApplicationContext());
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        ButterKnife.bind(this);
+        ActivitySettingsBinding binding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+
+        backButton = binding.back;
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

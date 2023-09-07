@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.aricneto.twistify.R;
+import com.aricneto.twistify.databinding.DialogSettingsChangeLocaleBinding;
 import com.aricneto.twistytimer.activity.SettingsActivity;
 import com.aricneto.twistytimer.listener.DialogListener;
 import com.aricneto.twistytimer.utils.LocaleUtils;
@@ -27,9 +28,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Dialog used to select application language
@@ -37,10 +35,8 @@ import butterknife.Unbinder;
 
 public class LocaleSelectDialog extends DialogFragment implements DialogListener{
 
-    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    private Unbinder mUnbinder;
 
     public static LocaleSelectDialog newInstance() {
         return new LocaleSelectDialog();
@@ -48,8 +44,10 @@ public class LocaleSelectDialog extends DialogFragment implements DialogListener
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.dialog_settings_change_locale, container);
-        mUnbinder = ButterKnife.bind(this, dialogView);
+        DialogSettingsChangeLocaleBinding binding = DialogSettingsChangeLocaleBinding.inflate(inflater);
+        View dialogView = binding.getRoot();
+
+        recyclerView = binding.recyclerView;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setAdapter(new LocaleSelectAdapter(getActivity(), this));
@@ -68,7 +66,6 @@ public class LocaleSelectDialog extends DialogFragment implements DialogListener
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 
     @Override
